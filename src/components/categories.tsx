@@ -10,7 +10,7 @@ interface CategoryGridProps {
 const CategoryGrid = ({
   categories,
   itemsPerPage = 1200,
-  setFilters
+  setFilters,
 }: CategoryGridProps) => {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -26,20 +26,22 @@ const CategoryGrid = ({
         style={{ flexDirection: "column", gap: "1rem" }}
       >
         <div
-            onClick={() =>
-              setFilters((prev: any) => ({ ...prev, category: "",page:1 }))
-            }
-            key={`all`}
-            className="cursor-pointer flex justify-center items-center relative overflow-hidden rounded-lg border bg-card p-4 text-card-foreground transition-all hover:scale-[1.02] hover:shadow-sm"
-          >
-            <h3 className="text-center text-xs font-medium sm:text-base">
-              Tous
-            </h3>
-          </div>
+          onClick={() =>
+            setFilters((prev: any) => ({ ...prev, category: "", page: 1 }))
+          }
+          key={`all`}
+          className="cursor-pointer flex justify-center items-center relative overflow-hidden rounded-lg border bg-card p-4 text-card-foreground transition-all hover:scale-[1.02] hover:shadow-sm"
+        >
+          <h3 className="text-center text-xs font-medium sm:text-base">Tous</h3>
+        </div>
         {paginatedCategories.map((category, index) => (
           <div
             onClick={() =>
-              setFilters((prev: any) => ({ ...prev, category: category,page:1 }))
+              setFilters((prev: any) => ({
+                ...prev,
+                category: category,
+                page: 1,
+              }))
             }
             key={`${category}-${index}`}
             className="cursor-pointer flex justify-center items-center relative overflow-hidden rounded-lg border bg-card p-4 text-card-foreground transition-all hover:scale-[1.02] hover:shadow-sm"
