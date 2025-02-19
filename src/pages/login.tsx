@@ -16,11 +16,11 @@ export default function Login() {
   const { setAccount } = useXtreamContext();
   const [formType, setFormType] = useState("xtream");
   const [formData, setFormData] = useState({
-    playlistName: "test",
+    playlistName: "AICKO",
     username: "enAWHBHe",
     host: "http://r360.fyi:2103",
     password: "aPQdnzc",
-    m3uUrl: ""
+    m3uUrl: "",
   });
 
   function getUsernameAndHostAndPassFromUrl(url: string): {
@@ -48,7 +48,7 @@ export default function Login() {
         username: formData.username,
         host: formData.host,
         password: formData.password,
-        m3uUrl: ""
+        m3uUrl: "",
       });
       navigate("/home");
     } else {
@@ -60,15 +60,18 @@ export default function Login() {
         username,
         host,
         password,
-        m3uUrl: formData.m3uUrl
+        m3uUrl: formData.m3uUrl,
       });
       navigate("/home");
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a2e] flex items-center justify-center">
+    <div className="min-h-screen bg-[#000000] flex flex-col items-center justify-center">
       {/* <IPTVPlayer src='http://r360.fyi:2103/enAWHBHe/aPQdnzc/12071' /> */}
+      <div className="mb-8">
+        <img src="/logo.png" width={250} height={250} />
+      </div>
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <RadioGroup
           defaultValue="xtream"

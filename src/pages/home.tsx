@@ -11,23 +11,21 @@ export default function StreamingInterface() {
   const formattedTime = currentTime.toLocaleTimeString("fr-FR", {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false
+    hour12: false,
   });
   const formattedDate = currentTime.toLocaleDateString("fr-FR", {
     month: "short",
     day: "numeric",
-    year: "numeric"
+    year: "numeric",
   });
 
-useEffect(() => {
-  console.log(account);
-  
-}, [account]);
+  useEffect(() => {
+    console.log(account);
+  }, [account]);
 
   if (!account?.username) {
     return (
       <div className="h-screen w-screen bg-[#0a0a2e] text-white p-4 flex flex-col">
-
         <button
           onClick={() => navigate("/")}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
@@ -39,9 +37,10 @@ useEffect(() => {
   }
 
   return (
-    <div className="h-screen w-screen bg-[#0a0a2e] text-white p-4 flex flex-col">
+    <div className="h-screen w-screen bg-[#000000] text-white p-4 flex flex-col">
       {/* Header */}
       <header className="flex justify-between items-center mb-6">
+        <img src="/logo.png" width={180} />
         <div className="flex items-center gap-2 text-base sm:text-lg font-bold">
           <Tv className="w-6 h-6" />
           <span>{account.playlistName}</span>
@@ -58,7 +57,7 @@ useEffect(() => {
             className="flex items-center gap-2 text-sm font-semibold hover:text-blue-400 transition-colors"
           >
             <Settings className="w-5 h-5" />
-            <span className="hidden sm:inline">PARAMETER</span>
+            <span className="hidden sm:inline">SETTINGS</span>
           </Link>
         </div>
       </header>
