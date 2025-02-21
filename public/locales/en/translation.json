@@ -1,0 +1,25 @@
+{
+  "welcome": "Welcome",
+  "description": "The best IPTV application",
+  "submit": "Submit",
+  "live": "Live",
+  "movies": "Movies",
+  "series": "Series",
+  "channels": "Channels",
+  "search": "Search",
+  "settings": "Settings",
+  "language": "Language",
+  "theme": "Theme",
+  "logged": "Logged in as",
+  "logout": "Logout",
+  "home"  : "Home",
+  "login" : "Login",
+  "all" : "All",
+  "categories" : "Categories",
+  "playlistname" : "Playlist name",
+  "show" : "Show",
+  "hide" : "Hide",
+  "close" : "Close",
+  "back" : "Back"
+  
+}

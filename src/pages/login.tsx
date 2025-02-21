@@ -3,16 +3,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { createPlaylist, parsePlaylist } from "@/services/xtream.service";
-import { useMutation } from "@tanstack/react-query";
 import { useXtreamContext } from "@/wrappers/UserContext";
-import { useNavigate, useRouteError } from "react-router-dom";
-
-// import { parseM3U, parseM3UU } from "@/services/m3u.service";
-// import IPTVPlayer from "../../components/player/player";
+import { useNavigate } from "react-router-dom";
+import { LangSelect } from "@/components/lang";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const { setAccount } = useXtreamContext();
   const [formType, setFormType] = useState("xtream");
   const [formData, setFormData] = useState({
@@ -67,12 +66,12 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#000000] flex flex-col items-center justify-center">
+    <div className="min-h-screen flex flex-col items-center justify-center">
       {/* <IPTVPlayer src='http://r360.fyi:2103/enAWHBHe/aPQdnzc/12071' /> */}
       <div className="mb-8">
-        <img src="/logo.png" width={250} height={250} />
+        <img src="/logo.png" width={250} />
       </div>
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md ">
         <RadioGroup
           defaultValue="xtream"
           onValueChange={setFormType}
@@ -86,6 +85,8 @@ export default function Login() {
             <RadioGroupItem value="m3u" id="m3u" />
             <Label htmlFor="m3u">M3U URL</Label>
           </div>
+
+          <LangSelect />
         </RadioGroup>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -137,7 +138,7 @@ export default function Login() {
           )}
 
           <Button type="submit" className="w-full">
-            Submit
+            {t("submit")}
           </Button>
         </form>
       </div>

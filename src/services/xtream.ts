@@ -108,6 +108,10 @@ class XtreamAPI {
     }
   }
 
+   getHiddenCategories = () => {
+    return JSON.parse(localStorage.getItem("hiddenCategories") ?? "[]");
+  };
+
 
 }
 

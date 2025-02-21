@@ -1,8 +1,9 @@
 import Tv from "@/pages/tv";
 import Login from "@/pages/login";
-import DashboardWrapper from "@/wrappers/dashboard.wrapper";
 import { createBrowserRouter } from "react-router-dom";
+import Series from "@/pages/series";
 import Movies from "@/pages/movies";
+
 import Profile from "@/pages/profile";
 import Home from "@/pages/home";
 
@@ -17,26 +18,18 @@ export const router = createBrowserRouter([
   },
   {
     path: "tv",
-    element: (
-      // <DashboardWrapper>
-      <Tv />
-      // </DashboardWrapper>
-    )
+    element: <Tv />
   },
   {
     path: "movies",
-    element: (
-      // <DashboardWrapper>
-        <Movies />
-      // </DashboardWrapper>
-    )
+    element: <Movies />
   },
   {
     path: "profile",
-    element: (
-      <DashboardWrapper>
-        <Profile />
-      </DashboardWrapper>
-    )
+    element: <Profile />
+  },
+  {
+    path: "series",
+    element: <Series />
   }
 ]);

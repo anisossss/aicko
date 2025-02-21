@@ -8,7 +8,9 @@ import { router } from "./providers/router.provider.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Providers>
-      <RouterProvider router={router} />
+      <div className="global">
+        <RouterProvider router={router} />
+      </div>
     </Providers>
   </StrictMode>
 );

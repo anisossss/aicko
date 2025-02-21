@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "tsc --noEmit || true && vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -47,6 +47,8 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.2.1",
     "hls.js": "^1.5.20",
+    "i18next": "^24.2.2",
+    "i18next-http-backend": "^3.0.2",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.438.0",
     "mpegts.js": "^1.8.0",
@@ -55,6 +57,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
+    "react-i18next": "^15.4.1",
     "react-intersection-observer": "^9.15.1",
     "react-player": "^2.16.0",
     "react-router-dom": "^6.26.1",
