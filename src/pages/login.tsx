@@ -28,9 +28,9 @@ export default function Login() {
     password: string;
   } {
     const urlObj = new URL(url);
-    const username = urlObj.username;
     const host = urlObj.origin;
-    const password = urlObj.password;
+    const username = urlObj.searchParams.get("username") || "";
+    const password = urlObj.searchParams.get("password") || "";
     return { username, host, password };
   }
 
