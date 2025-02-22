@@ -12,11 +12,14 @@ import { ArrowBigLeft, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useXtreamContext } from "@/wrappers/UserContext";
 import { useTranslation } from "react-i18next";
+import { Input } from "@/components/ui/input";
 
 export default function Series() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSeriesInfo, setSelectedSeriesInfo] = useState<SeriesInfo | null>(null);
   const [series, setSeries] = useState<Series[]>([]);
+  const [allSeries, setAllSeries] = useState<Series[]>([]);
+
   const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedStream, setSelectedStream] = useState<{
@@ -27,6 +30,8 @@ export default function Series() {
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [xtream, setXtream] = useState<XtreamAPI | null>(null);
   const { account } = useXtreamContext();
+  const [search, setSearch] = useState("");
+
 
   useEffect(() => {
     if (!account || !account.host || !account.username || !account.password)
@@ -65,6 +70,7 @@ export default function Series() {
         }
 
         if (seriesData) setSeries(seriesData);
+        if (seriesData) setAllSeries(seriesData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -74,6 +80,17 @@ export default function Series() {
 
     fetchData();
   }, [selectedCategory, xtream]);
+
+  const searchHandler = (filter: string) => {
+    if (filter === "") {
+      setSeries(allSeries);
+    } else {
+      const filteredSeries = allSeries.filter((serie) =>
+        serie.name.toLowerCase().includes(filter.toLowerCase())
+      );
+      setSeries(filteredSeries);
+    }
+  };
 
   if (!xtream) {
     return (
@@ -123,6 +140,27 @@ export default function Series() {
             {selectedStream && <AssetPlayer src={selectedStream.url} />}
           </DialogContent>
         </Dialog>
+
+        <div className="flex w-full max-w-sm items-center space-x-2 mb-4">
+          <Input
+            type="text"
+            placeholder={t("searchseriesplaceholder")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Button
+            type="button"
+            onClick={() => {
+              setSearch("");
+              searchHandler("");
+            }}
+          >
+            {t("clear")}
+          </Button>
+          <Button type="button" onClick={() => searchHandler(search)}>
+            {t("search")}
+          </Button>
+        </div>
 
         <SeriesModal
           seriesInfo={selectedSeriesInfo}

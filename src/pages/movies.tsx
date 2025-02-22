@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -8,12 +8,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import XtreamAPI from "@/services/xtream";
 import type { Movie, Category } from "@/services/xtream";
 import AssetPlayer from "@/components/asset-player/asset-player";
-import { InView } from "react-intersection-observer";
 import { Button } from "@/components/ui/button";
 import { ArrowBigLeft, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useXtreamContext } from "@/wrappers/UserContext";
 import { useTranslation } from "react-i18next";
+import { Input } from "@/components/ui/input";
+import { useInView } from "react-intersection-observer";
 
 export default function Movies() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -29,6 +30,8 @@ export default function Movies() {
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [xtream, setXtream] = useState<XtreamAPI | null>(null);
   const { account } = useXtreamContext();
+  const [search, setSearch] = useState("");
+  const [allMovies, setAllMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
     if (!account || !account.host || !account.username || !account.password)
@@ -67,6 +70,7 @@ export default function Movies() {
         }
 
         if (movieData) setMovies(movieData);
+        if (movieData) setAllMovies(movieData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -76,6 +80,17 @@ export default function Movies() {
 
     fetchData();
   }, [selectedCategory, xtream]);
+
+  const searchHandler = (filter: string) => {
+    if (filter === "") {
+      setMovies(allMovies);
+    } else {
+      const filteredMovies = allMovies.filter((movie) =>
+        movie.name.toLowerCase().includes(filter.toLowerCase())
+      );
+      setMovies(filteredMovies);
+    }
+  };
 
   if (!xtream) {
     return (
@@ -120,6 +135,27 @@ export default function Movies() {
           </DialogContent>
         </Dialog>
 
+        <div className="flex w-full max-w-sm items-center space-x-2 mb-4">
+          <Input
+            type="text"
+            placeholder={t("searchmoviesplaceholder")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Button
+            type="button"
+            onClick={() => {
+              setSearch("");
+              searchHandler("");
+            }}
+          >
+            {t("clear")}
+          </Button>
+          <Button type="button" onClick={() => searchHandler(search)}>
+            {t("search")}
+          </Button>
+        </div>
+
         {isLoading ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:gap-5 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
             {Array.from({ length: 12 }).map((_, index) => (
@@ -159,57 +195,41 @@ interface MovieCardProps {
 }
 
 const MovieCard = ({ movie, onSelect }: MovieCardProps) => {
-  const [loaded, setLoaded] = useState(false);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const { ref, inView } = useInView({
+    threshold: 0.01
+  });
 
-  useEffect(() => {
-    if (loaded && movie.stream_icon) {
-      const img = new Image();
-      img.src = movie.stream_icon;
-      img.onload = () => setImageSrc(movie.stream_icon);
-      img.onerror = () => setImageSrc("/movie.webp");
-    }
-  }, [loaded, movie.stream_icon]);
+  if (!inView) return <div ref={ref} />;
 
   return (
-    <InView
-      triggerOnce
-      rootMargin="200px 0px"
-      threshold={0.01}
-      onChange={(inView) => inView && !loaded && setLoaded(true)}
+    <Card
+      ref={ref}
+      onClick={onSelect}
+      style={{ borderColor: "#0a0a2e" }}
+      className="cursor-pointer group relative overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-lg"
     >
-      {({ inView, ref }) => (
-        <div ref={ref}>
-          <Card
-            onClick={onSelect}
-            style={{ borderColor: "#0a0a2e" }}
-            className="cursor-pointer group relative overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-lg"
-          >
-            <AspectRatio ratio={6 / 9}>
-              <div className="relative h-full w-full">
-                <img
-                  src={imageSrc ?? "/movie.webp"}
-                  alt={movie.name}
-                  className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "/movie.webp";
-                    (e.target as HTMLImageElement).style.objectFit = "cover";
-                  }}
-                />
+      <AspectRatio ratio={6 / 9}>
+        <div className="relative h-full w-full">
+          <img
+            src={movie.stream_icon ?? "/movie.webp"}
+            alt={movie.name}
+            className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/movie.webp";
+              (e.target as HTMLImageElement).style.objectFit = "cover";
+            }}
+          />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
 
-                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                  <h3 className="truncate text-sm md:text-base lg:text-lg font-bold drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-                    {movie.name}
-                  </h3>
-                </div>
-              </div>
-            </AspectRatio>
-          </Card>
+          <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+            <h3 className="truncate text-sm md:text-base lg:text-lg font-bold drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+              {movie.name}
+            </h3>
+          </div>
         </div>
-      )}
-    </InView>
+      </AspectRatio>
+    </Card>
   );
 };
 

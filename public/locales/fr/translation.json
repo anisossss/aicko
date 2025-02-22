@@ -6,7 +6,6 @@
   "movies": "Films",
   "series": "Séries",
   "channels": "Chaînes",
-  "search": "Rechercher",
   "settings": "Paramètres",
   "language": "Langue",
   "theme": "Thème",
@@ -20,5 +19,13 @@
   "show": "Afficher",
   "hide": "Masquer",
   "close": "Fermer",
-  "back": "Retour"
+  "back": "Retour",
+  "search": "Rechercher",
+  "searchmoviesplaceholder" : "Rechercher des films...",
+  "searchseriesplaceholder" : "Rechercher des series...",
+  "searchchannelsplaceholder" : "Rechercher des chaines...",
+  "searchresults": "Résultats de la recherche",
+  "searchnoresults": "Aucun résultat trouvé",
+  "searching": "Recherche en cours...",
+  "clear": "Effacer"
 }

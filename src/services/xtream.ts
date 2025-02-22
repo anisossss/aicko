@@ -1,72 +1,72 @@
+import axios from "axios";
+
 class XtreamAPI {
+  proxy = "http://localhost:3500";
   private readonly host: string;
   private readonly username: string;
   private readonly password: string;
 
   constructor(host: string, username: string, password: string) {
-    this.host = host.replace(/\/+$/, "");
-    this.username = encodeURIComponent(username);
-    this.password = encodeURIComponent(password);
+    const cleanedHost = host.replace(/^https?:\/\//, "").replace(/\/+$/, "");
+    this.host = `${this.proxy}/?url=http://${encodeURIComponent(cleanedHost)}`;
+    this.username = username;
+    this.password = password;
   }
 
-  private async fetchData<T>(url: string): Promise<T | null> {
+  private async fetchData<T>(partialUrl: string): Promise<T | null> {
     try {
-      const response = await fetch(url);
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      return await response.json();
+      const response = await axios.get<T>(encodeURI(partialUrl));
+      return response.data;
     } catch (error) {
-      console.error("Request failed:", error);
+      console.error("Request failed for URL:", partialUrl, error);
       return null;
     }
   }
 
-  // Live TV Endpoints
   async getLiveStreams(): Promise<LiveStream[] | null> {
-    const url = `${this.host}/player_api.php?username=${this.username}&password=${this.password}&action=get_live_streams`;
+    const url = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_live_streams`;
     return this.fetchData<LiveStream[]>(url);
   }
 
-  async getLiveStreamsByCategory(categoryId: number): Promise<LiveStream[] | null> {
-    const url = `${this.host}/player_api.php?username=${this.username}&password=${this.password}&action=get_live_streams&category_id=${categoryId}`;
+  async getLiveStreamsByCategory(
+    categoryId: number
+  ): Promise<LiveStream[] | null> {
+    const url = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_live_streams&category_id=${categoryId}`;
     return this.fetchData<LiveStream[]>(url);
   }
 
   async getLiveCategories(): Promise<Category[] | null> {
-    const url = `${this.host}/player_api.php?username=${this.username}&password=${this.password}&action=get_live_categories`;
+    const url = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_live_categories`;
     return this.fetchData<Category[]>(url);
   }
 
-  // Movie Endpoints
   async getMovies(categoryId?: number): Promise<Movie[] | null> {
-    const base = `${this.host}/player_api.php?username=${this.username}&password=${this.password}&action=get_vod_streams`;
+    const base = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_vod_streams`;
     const url = categoryId ? `${base}&category_id=${categoryId}` : base;
     return this.fetchData<Movie[]>(url);
   }
 
   async getMovieCategories(): Promise<Category[] | null> {
-    const url = `${this.host}/player_api.php?username=${this.username}&password=${this.password}&action=get_vod_categories`;
+    const url = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_vod_categories`;
     return this.fetchData<Category[]>(url);
   }
 
-  // Series Endpoints
   async getSeries(categoryId?: number): Promise<Series[] | null> {
-    const base = `${this.host}/player_api.php?username=${this.username}&password=${this.password}&action=get_series`;
+    const base = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_series`;
     const url = categoryId ? `${base}&category_id=${categoryId}` : base;
     return this.fetchData<Series[]>(url);
   }
 
   async getSeriesInfo(seriesId: number): Promise<SeriesInfo | null> {
-    const url = `${this.host}/player_api.php?username=${this.username}&password=${this.password}&action=get_series_info&series_id=${seriesId}`;
+    const url = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_series_info&series_id=${seriesId}`;
     return this.fetchData<SeriesInfo>(url);
   }
 
   async getSeriesCategories(): Promise<Category[] | null> {
-    const url = `${this.host}/player_api.php?username=${this.username}&password=${this.password}&action=get_series_categories`;
+    const url = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_series_categories`;
     return this.fetchData<Category[]>(url);
   }
 
-  // Stream URL Generators
   getLiveStreamUrl(streamId: number, extension: string = "ts"): string {
     return `${this.host}/live/${this.username}/${this.password}/${streamId}.${extension}`;
   }
@@ -79,10 +79,9 @@ class XtreamAPI {
     return `${this.host}/series/${this.username}/${this.password}/${episode.id}.${episode.container_extension}`;
   }
 
-  // EPG Endpoints
   async getFullEPG(): Promise<string | null> {
     try {
-      const url = `${this.host}/xmltv.php?username=${this.username}&password=${this.password}`;
+      const url = `${this.host}/xmltv.php&username=${this.username}&password=${this.password}`;
       const response = await fetch(url);
       return await response.text();
     } catch (error) {
@@ -91,28 +90,29 @@ class XtreamAPI {
     }
   }
 
-  async getShortEPG(streamId: number, limit: number = 4): Promise<ShortEPG[] | null> {
+  async getShortEPG(
+    streamId: number,
+    limit: number = 4
+  ): Promise<ShortEPG[] | null> {
     try {
-      const url = `${this.host}/player_api.php?username=${this.username}&password=${this.password}&action=get_short_epg&stream_id=${streamId}&limit=${limit}`;
+      const url = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_short_epg&stream_id=${streamId}&limit=${limit}`;
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
       return data.epg_listings || [];
     } catch (error) {
-      console.error('Error fetching EPG:', error);
+      console.error("Error fetching EPG:", error);
       return null;
     }
   }
 
-   getHiddenCategories = () => {
+  getHiddenCategories = () => {
     return JSON.parse(localStorage.getItem("hiddenCategories") ?? "[]");
   };
-
-
 }
 
 // Type Definitions

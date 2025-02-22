@@ -6,7 +6,6 @@
   "movies": "Movies",
   "series": "Series",
   "channels": "Channels",
-  "search": "Search",
   "settings": "Settings",
   "language": "Language",
   "theme": "Theme",
@@ -20,6 +19,14 @@
   "show" : "Show",
   "hide" : "Hide",
   "close" : "Close",
-  "back" : "Back"
+  "back" : "Back",
+  "search" : "Search",
+  "searchmoviesplaceholder" : "Search for movies...",
+  "searchseriesplaceholder" : "Search for series...",
+  "searchchannelsplaceholder" : "Search for channels...",
+  "searchresults" : "Search results",
+  "searchnoresults" : "No results found",
+  "searching" : "Searching...",
+  "clear" : "Clear"
   
 }

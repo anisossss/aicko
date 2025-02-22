@@ -19,7 +19,7 @@ export default function Login() {
     username: "enAWHBHe",
     host: "http://r360.fyi:2103",
     password: "aPQdnzc",
-    m3uUrl: "",
+    m3uUrl: ""
   });
 
   function getUsernameAndHostAndPassFromUrl(url: string): {
@@ -47,19 +47,21 @@ export default function Login() {
         username: formData.username,
         host: formData.host,
         password: formData.password,
-        m3uUrl: "",
+        m3uUrl: ""
       });
       navigate("/home");
     } else {
       const { username, host, password } = getUsernameAndHostAndPassFromUrl(
         formData.m3uUrl
       );
+      console.log({ username, host, password });
+
       setAccount({
         playlistName: formData.playlistName,
         username,
         host,
         password,
-        m3uUrl: formData.m3uUrl,
+        m3uUrl: formData.m3uUrl
       });
       navigate("/home");
     }
