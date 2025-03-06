@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class XtreamAPI {
-  proxy = "http://localhost:3500";
+  proxy = "http://51.161.32.128:3500";
   private readonly host: string;
   private readonly username: string;
   private readonly password: string;
