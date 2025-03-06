@@ -39,6 +39,10 @@ export default function Login() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const saveData = (data: any) => {
+    localStorage.setItem("xtreamAccount", JSON.stringify(data));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formType === "xtream") {
@@ -48,6 +52,12 @@ export default function Login() {
         host: formData.host,
         password: formData.password,
         m3uUrl: ""
+      });
+      saveData({
+        playlistName: formData.playlistName,
+        username: formData.username,
+        host: formData.host,
+        password: formData.password
       });
       navigate("/home");
     } else {
@@ -62,6 +72,12 @@ export default function Login() {
         host,
         password,
         m3uUrl: formData.m3uUrl
+      });
+      saveData({
+        playlistName: formData.playlistName,
+        username: formData.username,
+        host: formData.host,
+        password: formData.password
       });
       navigate("/home");
     }

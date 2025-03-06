@@ -13,10 +13,12 @@ import { Link } from "react-router-dom";
 import { useXtreamContext } from "@/wrappers/UserContext";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export default function Series() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSeriesInfo, setSelectedSeriesInfo] = useState<SeriesInfo | null>(null);
+  const [selectedSeriesInfo, setSelectedSeriesInfo] =
+    useState<SeriesInfo | null>(null);
   const [series, setSeries] = useState<Series[]>([]);
   const [allSeries, setAllSeries] = useState<Series[]>([]);
 
@@ -31,7 +33,6 @@ export default function Series() {
   const [xtream, setXtream] = useState<XtreamAPI | null>(null);
   const { account } = useXtreamContext();
   const [search, setSearch] = useState("");
-
 
   useEffect(() => {
     if (!account || !account.host || !account.username || !account.password)
@@ -108,7 +109,13 @@ export default function Series() {
   const handleSeriesSelect = async (seriesId: number) => {
     if (!xtream) return;
     const seriesInfo = await xtream.getSeriesInfo(seriesId);
-    setSelectedSeriesInfo(seriesInfo);
+    const hasavi =
+      seriesInfo?.episodes?.[1]?.[0]?.container_extension === "avi";
+    if (!hasavi) {
+      setSelectedSeriesInfo(seriesInfo);
+    } else {
+      alert("Le navigateur ne supporte pas ce type de fichier");
+    }
   };
 
   return (
@@ -137,6 +144,9 @@ export default function Series() {
           onOpenChange={() => setSelectedStream(null)}
         >
           <DialogContent className="bg-black p-0 border-none max-w-6xl w-[90vw] rounded-none">
+            <DialogTitle className="bg-black text-white border-none">
+              {selectedStream?.episode.title}
+            </DialogTitle>
             {selectedStream && <AssetPlayer src={selectedStream.url} />}
           </DialogContent>
         </Dialog>
@@ -363,7 +373,11 @@ interface SeriesModalProps {
   onEpisodeSelect: (episode: Episode) => void;
 }
 
-const SeriesModal = ({ seriesInfo, onClose, onEpisodeSelect }: SeriesModalProps) => {
+const SeriesModal = ({
+  seriesInfo,
+  onClose,
+  onEpisodeSelect
+}: SeriesModalProps) => {
   const { t } = useTranslation();
 
   if (!seriesInfo) return null;
@@ -371,7 +385,7 @@ const SeriesModal = ({ seriesInfo, onClose, onEpisodeSelect }: SeriesModalProps)
   return (
     <Dialog open={!!seriesInfo} onOpenChange={onClose}>
       <DialogContent className="bg-black p-0 border-none max-w-6xl w-[90vw] rounded-none">
-
+        <DialogTitle className="bg-black text-white border-none"></DialogTitle>
         <div className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
             {/* <img
@@ -380,41 +394,45 @@ const SeriesModal = ({ seriesInfo, onClose, onEpisodeSelect }: SeriesModalProps)
               className="w-full md:w-1/3 rounded-lg"
             /> */}
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-white">{seriesInfo.info.name}</h2>
+              <h2 className="text-2xl font-bold text-white">
+                {seriesInfo.info.name}
+              </h2>
               {/* <p className="text-gray-300">{seriesInfo.info.plot}</p> */}
               <p className="text-gray-300">{seriesInfo.info.genre}</p>
               <p className="text-gray-300">{seriesInfo.info.releaseDate}</p>
             </div>
           </div>
           <ScrollArea className="h-[60vh]">
-
-          <div className="mt-4">
-            {seriesInfo.episodes && Object.keys(seriesInfo.episodes).map((season) => (
-              <div key={season} className="mb-4">
-                <h3 className="text-xl font-bold text-white">season {season}</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-2">
-                  {seriesInfo.episodes[season]?.map((episode) => (
-                    <div
-                      key={episode.id}
-                      onClick={() => onEpisodeSelect(episode)}
-                      className="cursor-pointer"
-                    >
-                      <img
-                        src={episode.info.movie_image || seriesInfo.info.cover}
-                        alt={episode.title}
-                        className="w-full rounded-lg h-32 object-cover"
-                    
-                      />
-                      <p className="text-white">{episode.title}</p>
+            <div className="mt-4">
+              {seriesInfo.episodes &&
+                Object.keys(seriesInfo.episodes).map((season) => (
+                  <div key={season} className="mb-4">
+                    <h3 className="text-xl font-bold text-white">
+                      season {season}
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-2">
+                      {seriesInfo.episodes[season]?.map((episode) => (
+                        <div
+                          key={episode.id}
+                          onClick={() => onEpisodeSelect(episode)}
+                          className="cursor-pointer"
+                        >
+                          <img
+                            src={
+                              episode.info.movie_image || seriesInfo.info.cover
+                            }
+                            alt={episode.title}
+                            className="w-full rounded-lg h-32 object-cover"
+                          />
+                          <p className="text-white">{episode.title}</p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+                  </div>
+                ))}
+            </div>
           </ScrollArea>
         </div>
-  
       </DialogContent>
     </Dialog>
   );

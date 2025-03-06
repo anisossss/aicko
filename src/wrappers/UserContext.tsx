@@ -46,6 +46,18 @@ export const XtreamProvider = ({ children }: { children: ReactNode }) => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    const loadUserFromStorage = async () => {
+      setIsLoading(true);
+      const storedUser = localStorage.getItem("xtreamAccount");
+      if (storedUser) {
+        setAccount(JSON.parse(storedUser));
+      }
+      setIsLoading(false);
+    };
+    loadUserFromStorage();
+  }, []);
+
   // useEffect(() => {
   //   const loadUserFromStorage = async () => {
   //     setIsLoading(true)

@@ -8,15 +8,22 @@ export default defineConfig({
   plugins: [react()],
   server: {
     watch: {
-      ignored: ['**/node_modules/**'],
-    },
+      ignored: ["**/node_modules/**"]
+    }
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
+      "@": path.resolve(__dirname, "./src")
+    }
   },
   build: {
-    chunkSizeWarningLimit: 6000,
+    chunkSizeWarningLimit: 6000
+  },
+  optimizeDeps: {
+    exclude: [
+      "@ffmpeg/ffmpeg",
+      "@ffmpeg/util",
+      "@ffmpeg/core" // or core-mt if you used that
+    ]
   }
 });

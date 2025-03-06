@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class XtreamAPI {
-  proxy = "https://proxy-iptv-mocha.vercel.app";
+  proxy = "http://localhost:3500";
   private readonly host: string;
   private readonly username: string;
   private readonly password: string;
@@ -54,12 +54,14 @@ class XtreamAPI {
   async getSeries(categoryId?: number): Promise<Series[] | null> {
     const base = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_series`;
     const url = categoryId ? `${base}&category_id=${categoryId}` : base;
-    return this.fetchData<Series[]>(url);
+    const series = await this.fetchData<Series[]>(url);
+    return series;
   }
 
   async getSeriesInfo(seriesId: number): Promise<SeriesInfo | null> {
     const url = `${this.host}/player_api.php&username=${this.username}&password=${this.password}&action=get_series_info&series_id=${seriesId}`;
-    return this.fetchData<SeriesInfo>(url);
+
+    return await this.fetchData<SeriesInfo>(url);
   }
 
   async getSeriesCategories(): Promise<Category[] | null> {
@@ -110,6 +112,18 @@ class XtreamAPI {
     }
   }
 
+  checkifseriehasavi = async (serieId: number) => {
+    const data = await this.getSeriesInfo(serieId);
+    const episodes = data?.episodes;
+    for (const season in episodes) {
+      for (const episode of episodes[season]) {
+        if (episode.container_extension === "avi") {
+          return { seasons: data?.seasons, info: data?.info, episodes: [] };
+        }
+      }
+    }
+    return data;
+  };
   getHiddenCategories = () => {
     return JSON.parse(localStorage.getItem("hiddenCategories") ?? "[]");
   };
