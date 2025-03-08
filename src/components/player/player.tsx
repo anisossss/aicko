@@ -11,7 +11,7 @@ const Player = ({ src }: { src: string }) => {
       const player = mpegts.createPlayer({
         type: "mse",
         isLive: true,
-        url: src
+        url: src,
       });
 
       player.attachMediaElement(videoRef.current!);
@@ -40,11 +40,17 @@ const Player = ({ src }: { src: string }) => {
             Erreur Reseau
           </div>
           <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-            <p>Il y a une probleme avec le streaming</p>
+            <p>Il y aun problème avec le streaming</p>
           </div>
         </div>
       ) : (
-        <video ref={videoRef} controls autoPlay playsInline style={{width:"100%" , maxHeight:"60vh"}} />
+        <video
+          ref={videoRef}
+          controls
+          autoPlay
+          playsInline
+          style={{ width: "100%", maxHeight: "60vh" }}
+        />
       )}
     </div>
   );
