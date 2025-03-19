@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class XtreamAPI {
-  proxy = "https://porxy.iptv-aicko.com";
+  proxy = "https://proxy.iptv-aicko.com";
   private readonly host: string;
   private readonly username: string;
   private readonly password: string;
