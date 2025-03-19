@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class XtreamAPI {
-  proxy = "https://proxy.iptv-aicko.com";
+  proxy = "http://localhost:3500";
   private readonly host: string;
   private readonly username: string;
   private readonly password: string;
@@ -11,6 +11,19 @@ class XtreamAPI {
     this.host = `${this.proxy}/?url=http://${encodeURIComponent(cleanedHost)}`;
     this.username = username;
     this.password = password;
+
+    axios
+      .post(this.proxy + "/playlist", {
+        host: encodeURIComponent(cleanedHost),
+        username: this.username,
+        password: this.password
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   private async fetchData<T>(partialUrl: string): Promise<T | null> {
