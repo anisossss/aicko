@@ -15,11 +15,11 @@ export default function Login() {
   const { setAccount } = useXtreamContext();
   const [formType, setFormType] = useState("xtream");
   const [formData, setFormData] = useState({
-    playlistName: "AICKO",
-    username: "enAWHBHe",
-    host: "http://r360.fyi:2103",
-    password: "aPQdnzc",
-    m3uUrl: ""
+    playlistName: "",
+    username: "",
+    host: "",
+    password: "",
+    m3uUrl: "",
   });
 
   function getUsernameAndHostAndPassFromUrl(url: string): {
@@ -51,13 +51,13 @@ export default function Login() {
         username: formData.username,
         host: formData.host,
         password: formData.password,
-        m3uUrl: ""
+        m3uUrl: "",
       });
       saveData({
         playlistName: formData.playlistName,
         username: formData.username,
         host: formData.host,
-        password: formData.password
+        password: formData.password,
       });
       navigate("/home");
     } else {
@@ -71,13 +71,13 @@ export default function Login() {
         username,
         host,
         password,
-        m3uUrl: formData.m3uUrl
+        m3uUrl: formData.m3uUrl,
       });
       saveData({
         playlistName: formData.playlistName,
         username: formData.username,
         host: formData.host,
-        password: formData.password
+        password: formData.password,
       });
       navigate("/home");
     }
